@@ -274,11 +274,11 @@ func GetTrail(trail *Trail, trail_id uint64) error {
 	return nil
 }
 
-func GetUUID(db *TrailDB, trail_id uint64) (string, error) {
+func GetUUID(db *TrailDB, trail_id uint64) string {
 	raw := C.tdb_get_uuid(db.db, C.uint64_t(trail_id))
-	bytes := C.GoBytes(raw, 16)
-	hex := hex.EncodeToString(bytes)
-	return hex, nil
+	bytes := C.GoBytes(unsafe.Pointer(raw), 16)
+	hex := hex.EncodeToString(bytes[:])
+	return hex
 }
 
 func NewTrail(db *TrailDB, trail_id uint64) (*Trail, error) {
